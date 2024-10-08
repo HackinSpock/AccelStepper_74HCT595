@@ -222,6 +222,42 @@ AccelStepper::AccelStepper(uint8_t interface, uint8_t pin1, uint8_t pin2, uint8_
     setAcceleration(1);
 }
 
+AccelStepper::AccelStepper(uint8_t interface, Shifty *shift, uint8_t pin1, uint8_t pin2, uint8_t pin3, uint8_t pin4, bool enable)
+{
+    _interface = interface;
+    _shift = shift;
+    _currentPos = 0;
+    _targetPos = 0;
+    _speed = 0.0;
+    _maxSpeed = 1.0;
+    _acceleration = 0.0;
+    _sqrt_twoa = 1.0;
+    _stepInterval = 0;
+    _minPulseWidth = 1;
+    _enablePin = 0xff;
+    _lastStepTime = 0;
+    _pin[0] = pin1;
+    _pin[1] = pin2;
+    _pin[2] = pin3;
+    _pin[3] = pin4;
+    _enableInverted = false;
+    
+    // NEW
+    _n = 0;
+    _c0 = 0.0;
+    _cn = 0.0;
+    _cmin = 1.0;
+    _direction = DIRECTION_CCW;
+
+    int i;
+    for (i = 0; i < 4; i++)
+	_pinInverted[i] = 0;
+    if (enable)
+	enableOutputs();
+    // Some reasonable default
+    setAcceleration(1);
+}
+
 AccelStepper::AccelStepper(void (*forward)(), void (*backward)())
 {
     _interface = 0;
@@ -363,7 +399,9 @@ void AccelStepper::setOutputPins(uint8_t mask)
 	numpins = 3;
     uint8_t i;
     for (i = 0; i < numpins; i++)
-	digitalWrite(_pin[i], (mask & (1 << i)) ? (HIGH ^ _pinInverted[i]) : (LOW ^ _pinInverted[i]));
+    _shift->writeBit(_pin[i], (mask & (1 << i)) ? (HIGH ^ _pinInverted[i]) : (LOW ^ _pinInverted[i]));
+	//digitalWrite(_pin[i], (mask & (1 << i)) ? (HIGH ^ _pinInverted[i]) : (LOW ^ _pinInverted[i]));
+    
 }
 
 // 0 pin step function (ie for functional usage)
@@ -548,7 +586,9 @@ void    AccelStepper::disableOutputs()
     if (_enablePin != 0xff)
     {
         pinMode(_enablePin, OUTPUT);
-        digitalWrite(_enablePin, LOW ^ _enableInverted);
+        //digitalWrite(_enablePin, LOW ^ _enableInverted);
+        _shift->writeBit(_enablePin, LOW ^ _enableInverted);
+        
     }
 }
 
@@ -572,7 +612,8 @@ void    AccelStepper::enableOutputs()
     if (_enablePin != 0xff)
     {
         pinMode(_enablePin, OUTPUT);
-        digitalWrite(_enablePin, HIGH ^ _enableInverted);
+        //digitalWrite(_enablePin, HIGH ^ _enableInverted);
+        _shift->writeBit(_enablePin, HIGH ^ _enableInverted);
     }
 }
 
@@ -589,7 +630,9 @@ void AccelStepper::setEnablePin(uint8_t enablePin)
     if (_enablePin != 0xff)
     {
         pinMode(_enablePin, OUTPUT);
-        digitalWrite(_enablePin, HIGH ^ _enableInverted);
+        //digitalWrite(_enablePin, HIGH ^ _enableInverted);
+        _shift->writeBit(_enablePin, HIGH ^ _enableInverted);
+        
     }
 }
 

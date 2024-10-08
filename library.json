@@ -1,0 +1,20 @@
+{
+  "name": "AccelStepper",
+  "description": "Experimental stepper driver for Teensy 4.x boards",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/swissbyte/AccelStepper"
+  },
+  "authors":
+  {
+    "name": "swissbyte",
+    "url": "https://github.com/swissbyte",
+    "maintainer": true
+  },
+  "homepage": "https://luni64.github.io/TeensyStep4",
+  "version": "0.0.3",
+  "frameworks": "arduino",
+  "platforms": ["Teensy"]
+
+}
