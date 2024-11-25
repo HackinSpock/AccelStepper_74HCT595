@@ -69,6 +69,8 @@ private:
     /// Number of steppers we are controlling and the number
     /// of steppers in _steppers[]
     uint8_t       _num_steppers;
+
+    float         exposureTime = 2.0;//microseconds 
 };
 
 /// @example MultiStepper.pde

@@ -28,8 +28,10 @@ void MultiStepper::moveTo(long absolute[])
     for (i = 0; i < _num_steppers; i++)
     {
 	long thisDistance = absolute[i] - _steppers[i]->currentPosition();
-	float thisTime = abs(thisDistance) / _steppers[i]->maxSpeed();
+    //float thisTime = abs(thisDistance) / _steppers[i]->maxSpeed();
+    float thisTime = abs(thisDistance) / _steppers[i]->speed();
 
+    
 	if (thisTime > longestTime)
 	    longestTime = thisTime;
     }

@@ -335,7 +335,7 @@ void AccelStepper::setSpeed(float speed)
 {
     if (speed == _speed)
         return;
-    speed = constrain(speed, -_maxSpeed, _maxSpeed);
+    //speed = constrain(speed, -_maxSpeed, _maxSpeed);
     if (speed == 0.0)
 	_stepInterval = 0;
     else
